@@ -31,35 +31,30 @@ public class TaskService {
     @LogBeforeAspect
     @LogExceptionAspect
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
     }
 
     @Transactional
     @LogAroundAspect
     @LogAfterReturningAspect
     @LogExceptionAspect
-    public void createTask(Task task) {
-        try {
-            taskRepository.save(task);
-        } catch (Exception e) {
-            throw new RuntimeException("Error saving task: " + e.getMessage(), e);
-        }
+    public String createTask(Task task) {
+        taskRepository.save(task);
+        return "Task created";
     }
 
     @Transactional
     @LogAroundAspect
     @LogAfterReturningAspect
     @LogExceptionAspect
-    public void updateTask(Long id, Task taskDetails) {
+    public String updateTask(Long id, Task taskDetails) {
         Task task = getTaskById(id);
-        try {
-            task.setTitle(taskDetails.getTitle());
-            task.setDescription(taskDetails.getDescription());
-            task.setUserId(taskDetails.getUserId());
-            taskRepository.save(task);
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating task: " + e.getMessage(), e);
-        }
+        task.setTitle(taskDetails.getTitle());
+        task.setDescription(taskDetails.getDescription());
+        task.setUserId(taskDetails.getUserId());
+        taskRepository.save(task);
+        return "Task updated";
     }
 
     @Transactional
@@ -68,10 +63,6 @@ public class TaskService {
     @LogExceptionAspect
     public void deleteTask(Long id) {
         Task task = getTaskById(id);
-        try {
-            taskRepository.delete(task);
-        } catch (Exception e) {
-            throw new RuntimeException("Error deleting task: " + e.getMessage(), e);
-        }
+        taskRepository.delete(task);
     }
 }

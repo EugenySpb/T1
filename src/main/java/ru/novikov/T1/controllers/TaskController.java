@@ -1,6 +1,6 @@
 package ru.novikov.T1.controllers;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.novikov.T1.aspect.LogBeforeAspect;
 import ru.novikov.T1.models.Task;
@@ -32,22 +32,22 @@ public class TaskController {
 
     @PostMapping
     @LogBeforeAspect
-    public ResponseEntity<String> createTask(@RequestBody Task task) {
-        taskService.createTask(task);
-        return ResponseEntity.ok("Task created");
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createTask(@RequestBody Task task) {
+        return taskService.createTask(task);
     }
 
     @PutMapping("/{id}")
     @LogBeforeAspect
-    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        taskService.updateTask(id, task);
-        return ResponseEntity.ok("Task updated");
+    @ResponseStatus(HttpStatus.OK)
+    public String updateTask(@PathVariable Long id, @RequestBody Task task) {
+        return taskService.updateTask(id, task);
     }
 
     @DeleteMapping("/{id}")
     @LogBeforeAspect
-    public ResponseEntity<String> deleteTask(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
-        return ResponseEntity.ok("Task deleted");
     }
 }

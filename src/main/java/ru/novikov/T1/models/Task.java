@@ -1,15 +1,14 @@
 package ru.novikov.T1.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Table(name = "task")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "task")
 public class Task {
     @Id
     @Column(name = "id")
@@ -25,3 +24,5 @@ public class Task {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 }
+
+
