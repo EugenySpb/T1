@@ -1,11 +1,13 @@
 package ru.novikov.T1.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.novikov.T1.aspect.LogAfterReturningAspect;
 import ru.novikov.T1.aspect.LogAroundAspect;
 import ru.novikov.T1.aspect.LogBeforeAspect;
 import ru.novikov.T1.aspect.LogExceptionAspect;
+import ru.novikov.T1.kafka.KafkaTaskProducer;
 import ru.novikov.T1.models.Task;
 import ru.novikov.T1.repositories.TaskRepository;
 import ru.novikov.T1.util.TaskNotFoundException;
@@ -14,13 +16,11 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
-
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    private final KafkaTaskProducer kafkaTaskProducer;
 
     @LogBeforeAspect
     @LogAroundAspect
@@ -53,6 +53,12 @@ public class TaskService {
         task.setTitle(taskDetails.getTitle());
         task.setDescription(taskDetails.getDescription());
         task.setUserId(taskDetails.getUserId());
+
+        if (!task.getStatus().equals(taskDetails.getStatus())) {
+            task.setStatus(taskDetails.getStatus());
+            kafkaTaskProducer.sendTaskUpdate(id, taskDetails.getStatus());
+        }
+
         taskRepository.save(task);
         return "Task updated";
     }
