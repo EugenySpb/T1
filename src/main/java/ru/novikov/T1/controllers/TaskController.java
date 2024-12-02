@@ -31,8 +31,7 @@ public class TaskController {
     @GetMapping("/{id}")
     @LogBeforeAspect
     public TaskDTO getTaskById(@PathVariable Long id) {
-        Task task = taskService.getTaskById(id);
-        return taskMapper.toDto(task);
+        return taskService.getTaskById(id);
     }
 
     @PostMapping
