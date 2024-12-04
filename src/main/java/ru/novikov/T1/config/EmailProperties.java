@@ -1,4 +1,4 @@
-package ru.novikov.T1.util;
+package ru.novikov.T1.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

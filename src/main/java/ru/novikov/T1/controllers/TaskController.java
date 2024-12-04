@@ -3,11 +3,11 @@ package ru.novikov.T1.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.novikov.T1.aspect.LogBeforeAspect;
 import ru.novikov.T1.dto.TaskDTO;
 import ru.novikov.T1.models.Task;
 import ru.novikov.T1.services.TaskService;
 import ru.novikov.T1.util.TaskMapper;
+import ru.novikov.startert1.aspect.LogBeforeAspect;
 
 import java.util.List;
 
