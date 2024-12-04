@@ -3,16 +3,16 @@ package ru.novikov.T1.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.novikov.T1.aspect.LogAfterReturningAspect;
-import ru.novikov.T1.aspect.LogAroundAspect;
-import ru.novikov.T1.aspect.LogBeforeAspect;
-import ru.novikov.T1.aspect.LogExceptionAspect;
 import ru.novikov.T1.dto.TaskDTO;
 import ru.novikov.T1.kafka.KafkaTaskProducer;
 import ru.novikov.T1.models.Task;
 import ru.novikov.T1.repositories.TaskRepository;
 import ru.novikov.T1.util.TaskMapper;
 import ru.novikov.T1.util.TaskNotFoundException;
+import ru.novikov.startert1.aspect.LogAfterReturningAspect;
+import ru.novikov.startert1.aspect.LogAroundAspect;
+import ru.novikov.startert1.aspect.LogBeforeAspect;
+import ru.novikov.startert1.aspect.LogExceptionAspect;
 
 import java.util.List;
 

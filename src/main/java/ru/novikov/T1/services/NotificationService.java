@@ -5,7 +5,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import ru.novikov.T1.dto.TaskDTO;
-import ru.novikov.T1.util.EmailProperties;
+import ru.novikov.T1.config.EmailProperties;
 
 @Slf4j
 @Service
