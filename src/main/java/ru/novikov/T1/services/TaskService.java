@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.novikov.T1.dto.TaskDTO;
 import ru.novikov.T1.kafka.KafkaTaskProducer;
 import ru.novikov.T1.models.Task;
+import ru.novikov.T1.models.TaskStatus;
 import ru.novikov.T1.repositories.TaskRepository;
 import ru.novikov.T1.util.TaskMapper;
 import ru.novikov.T1.util.TaskNotFoundException;
@@ -27,8 +28,10 @@ public class TaskService {
 
     @LogBeforeAspect
     @LogAroundAspect
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<TaskDTO> getAllTasks() {
+        return taskRepository.findAll().stream()
+                .map(taskMapper::toDto)
+                .toList();
     }
 
     @LogBeforeAspect
@@ -43,7 +46,8 @@ public class TaskService {
     @LogAroundAspect
     @LogAfterReturningAspect
     @LogExceptionAspect
-    public String createTask(Task task) {
+    public String createTask(TaskDTO taskDTO) {
+        Task task = taskMapper.toEntity(taskDTO);
         taskRepository.save(task);
         return "Task created";
     }
@@ -52,17 +56,17 @@ public class TaskService {
     @LogAroundAspect
     @LogAfterReturningAspect
     @LogExceptionAspect
-    public String updateTask(Long id, Task taskDetails) {
-        TaskDTO taskDto = getTaskById(id);
-        Task task = taskMapper.toEntity(taskDto);
+    public String updateTask(Long id, TaskDTO taskDTO) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
 
-        task.setTitle(taskDetails.getTitle());
-        task.setDescription(taskDetails.getDescription());
-        task.setUserId(taskDetails.getUserId());
+        task.setTitle(taskDTO.getTitle());
+        task.setDescription(taskDTO.getDescription());
+        task.setUserId(taskDTO.getUserId());
 
-        boolean statusUpdated = !task.getStatus().equals(taskDetails.getStatus());
+        boolean statusUpdated = !task.getStatus().name().equals(taskDTO.getStatus());
         if (statusUpdated) {
-            task.setStatus(taskDetails.getStatus());
+            task.setStatus(TaskStatus.valueOf(taskDTO.getStatus()));
         }
 
         taskRepository.save(task);
@@ -78,8 +82,8 @@ public class TaskService {
     @LogAfterReturningAspect
     @LogExceptionAspect
     public void deleteTask(Long id) {
-        TaskDTO taskDto = getTaskById(id);
-        Task task = taskMapper.toEntity(taskDto);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
         taskRepository.delete(task);
     }
 }

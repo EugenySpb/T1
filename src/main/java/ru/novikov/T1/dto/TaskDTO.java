@@ -23,4 +23,15 @@ public class TaskDTO {
 
     @JsonProperty("status")
     private String status;
+
+    @Override
+    public String toString() {
+        return "TaskDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", userId=" + userId +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
