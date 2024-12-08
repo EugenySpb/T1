@@ -2,11 +2,10 @@ package ru.novikov.T1.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.novikov.T1.dto.TaskDTO;
-import ru.novikov.T1.models.Task;
 import ru.novikov.T1.services.TaskService;
-import ru.novikov.T1.util.TaskMapper;
 import ru.novikov.startert1.aspect.LogBeforeAspect;
 
 import java.util.List;
@@ -17,15 +16,11 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-    private final TaskMapper taskMapper;
 
     @GetMapping
     @LogBeforeAspect
     public List<TaskDTO> getAllTasks() {
-        return taskService.getAllTasks()
-                .stream()
-                .map(taskMapper::toDto)
-                .toList();
+        return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
@@ -37,22 +32,23 @@ public class TaskController {
     @PostMapping
     @LogBeforeAspect
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String createTask(@RequestBody TaskDTO taskDTO) {
-        Task task = taskMapper.toEntity(taskDTO);
-        return taskService.createTask(task);
+        return taskService.createTask(taskDTO);
     }
 
     @PutMapping("/{id}")
     @LogBeforeAspect
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
-        Task task = taskMapper.toEntity(taskDTO);
-        return taskService.updateTask(id, task);
+        return taskService.updateTask(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")
     @LogBeforeAspect
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
     }
